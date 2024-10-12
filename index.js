@@ -6,6 +6,11 @@ const jwt = require("jsonwebtoken");
 const app = express();
 
 app.use(bodyParser.json());
+app.all("/", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 
 const dbURI =
   "mongodb+srv://LeonAli:t0dqsPodJVqk61DK@cluster0.pmffn8w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -51,7 +56,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-app.post("/api/signup", async (req, res) => {
+app.post("/signup", async (req, res) => {
   const {
     firstName,
     lastName,
@@ -112,7 +117,7 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-app.post("/api/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -139,7 +144,7 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-app.get("/api/user", verifyToken, async (req, res) => {
+app.get("/user", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
     if (!user) return res.status(404).send("User not found");
@@ -148,7 +153,7 @@ app.get("/api/user", verifyToken, async (req, res) => {
     res.status(500).send("Error fetching user data");
   }
 });
-app.post("/api/logout", (req, res) => {
+app.post("/logout", (req, res) => {
   // Invalidate the token or handle session cleanup if needed
   res.status(200).send("Logout successful");
 });
