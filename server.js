@@ -7,7 +7,15 @@ const cors = require("cors");
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
+const corsOptions = {
+  origin: ["http://localhost:5173", "http://your-frontend-domain.com"], // Add your frontend URLs here
+  methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
+  credentials: true, // If using credentials (like cookies, authorization headers)
+};
+app.use(cors(corsOptions));
+// Handle preflight requests
+app.options("*", cors(corsOptions));
 
 const dbURI =
   "mongodb+srv://LeonAli:t0dqsPodJVqk61DK@cluster0.pmffn8w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
